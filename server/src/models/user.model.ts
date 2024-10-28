@@ -1,8 +1,5 @@
 import { hash } from 'bcrypt';
-import mongoose, { models } from 'mongoose';
 import { Schema, model } from 'mongoose';
-
-mongoose.Promise = global.Promise;
 
 export const UserSchema = new Schema({
   name: {
@@ -28,4 +25,4 @@ UserSchema.pre('save', async function(next) {
   next();
 })
 
-export const User = models.User || model("User", UserSchema);
+export const User = model("User", UserSchema);
