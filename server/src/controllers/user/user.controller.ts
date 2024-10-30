@@ -1,5 +1,8 @@
+import { compare } from "bcrypt";
+import jwt from 'jsonwebtoken';
 import { response } from "../../lib/response";
 import { User } from "../../models/user.model";
+import { JWT_SECRET } from "../../config/config";
 
 export const checkUserExistence = async (req: any, res: any) => {
   // logger.info("Check user existence")
@@ -12,10 +15,10 @@ export const checkUserExistence = async (req: any, res: any) => {
     email
   }).select('email')
   if (userExistence){
-    return res.status(200).json(response(true, userExistence, "User found!"));
+    return res.status(200).json(response(userExistence, "User found!"));
   }
 
-  return res.status(404).json(response(false, null, "User not found!"));
+  return res.status(404).json(response(null, "User not found!"));
 }
 
 export const registerUser = async (req: any, res: any) => {
@@ -33,26 +36,53 @@ export const registerUser = async (req: any, res: any) => {
     password,
   })
   if (registeredUser){
-    return res.status(200).json(response(true, registeredUser, "User registered successfully!"))
+    return res.status(200).json(response(registeredUser, "User registered successfully!"))
   }
 
-  return res.status(500).json(response(false, null, "Unable to register user!"))
+  return res.status(500).json(response(null, "Unable to register user!"))
 }
 
 export const loginUser = async (req : any, res : any) => {
   // logger.info("Login")
 
-  // const {
-  //   email,
-  //   password,
-  // } = req.body;
+  const {
+    email,
+    password,
+  } = req.body;
 
-  // const existingUser = await User.findOne({
-  //   email,
-  // })
-  // if (!existingUser){
-  //   return res.status(200).json(response(false, existingUser, "User registered successfully!"))
-  // }
+  const existingUser = await User.findOne({
+    email,
+    // password,
+  })
+  if (!existingUser){
+    return res.status(404).json(response(null, "User not found!"))
+  }
 
-  // return res.status(500).json(response(false, null, "Unable to register user!"))
+  const isMatch = await compare(password, existingUser.password)
+  if (!isMatch){
+    return res.status(401).json(response(null, "Invalid login credentials!"))
+  }
+
+  const token = jwt.sign({
+    userId: existingUser._id,
+    name: existingUser.name,
+    email: existingUser.email,
+  }, JWT_SECRET)
+
+  res.cookie('authToken', token, {
+    // httpOnly: true,  // Prevents client-side JavaScript from accessing the cookie
+    // secure: process.env.NODE_ENV === 'production', // Ensures cookie is only sent over HTTPS
+    // maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
+    // sameSite: 'Strict', // Cookie sent only on the same site
+  })
+
+  return res.status(200).json(response(null, "User logged in successfully!"))
+}
+
+export const logoutUser = async (req : any, res : any) => {
+  // logger.info("Login")
+
+  res.clearCookie('authToken')
+
+  return res.status(200).json(response(null, "User logged out successfully!"))
 }

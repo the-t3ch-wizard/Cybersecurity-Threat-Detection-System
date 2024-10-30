@@ -3,6 +3,7 @@ import cors from 'cors';
 import rootRouter from './routes/index.routes';
 import connectDB from './db';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ connectDB();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
   res.send('Hello, TypeScript Node Express!');

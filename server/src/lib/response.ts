@@ -1,7 +1,7 @@
 
 
-export const response = (success: boolean, data: any, message: string) => {
+export const response = (data: any, message: string) => {
   return {
-    success, data, message
+    data, message
   }
 }
