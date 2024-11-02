@@ -4,13 +4,12 @@ import rootRouter from './routes/index.routes';
 import connectDB from './db';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import { response } from './lib/response';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
-
-console.log(process.env.PORT);
 
 connectDB();
 
@@ -19,7 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-  res.send('Hello, TypeScript Node Express!');
+  res.status(200).json(response(null, "Cybersecurity Threat Detection System Server is Running!"));
 });
 
 app.use("/api/v1/", rootRouter)

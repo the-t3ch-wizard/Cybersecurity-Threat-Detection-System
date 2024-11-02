@@ -4,6 +4,29 @@ import { response } from "../../lib/response";
 import { User } from "../../models/user.model";
 import { JWT_SECRET } from "../../config/config";
 
+export const whoAmI = async (req: any, res: any) => {
+  // logger
+
+  const token = req.cookies.authToken;
+
+  const isValid : any = jwt.verify(token, JWT_SECRET)
+
+  if (!isValid){
+    return res.status(401).json(response(null, "Token is not valid!"));
+  }
+
+  const userId = isValid.userId
+  
+  const user = User.findOne({
+    _id: userId
+  })
+  if (!user){
+    return res.status(404).json(response(null, "User not found!"));
+  }
+  
+  return res.status(200).json(response(isValid, "User found!"));
+}
+
 export const checkUserExistence = async (req: any, res: any) => {
   // logger.info("Check user existence")
 
@@ -14,11 +37,11 @@ export const checkUserExistence = async (req: any, res: any) => {
   const userExistence = await User.findOne({
     email
   }).select('email')
-  if (userExistence){
-    return res.status(200).json(response(userExistence, "User found!"));
+  if (!userExistence){
+    return res.status(404).json(response(null, "User not found!"));
   }
 
-  return res.status(404).json(response(null, "User not found!"));
+  return res.status(200).json(response(userExistence, "User found!"));
 }
 
 export const registerUser = async (req: any, res: any) => {
