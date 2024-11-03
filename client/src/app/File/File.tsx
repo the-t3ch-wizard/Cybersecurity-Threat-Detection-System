@@ -1,6 +1,11 @@
-import { Button } from "@nextui-org/react"
+import { Button, Input } from "@nextui-org/react"
 import { Controller, useForm } from "react-hook-form";
 import Dropzone from "react-dropzone";
+import { AiFillFile } from "react-icons/ai";
+import { detectFile, fileAnalysis } from "../../services/file";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { DetectionResult } from "../../components/DetectionResult";
 
 export const File = () => {
 
@@ -14,9 +19,37 @@ export const File = () => {
     formState: { errors: errorLogin },
   } = useForm();
 
-  const loginHandler = (e: any) => {
-    console.log('handle loginHandler', e)
+  const [detectionStatus, setDetectionStatus] = useState('');
+  const [analysisUrl, setAnalysisUrl] = useState('');
+  const [attributeData, setAttributeData] = useState<any>({});
+
+  const loginHandler = async (e: any) => {
+    try {
+      setDetectionStatus('queued')
+      const fileDetectionResponse = await detectFile(e.file[0]);
+      setAnalysisUrl(fileDetectionResponse.data)
+      toast.info(fileDetectionResponse.message)
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
+
+  const getUrlAnalysis = async () => {
+    while (true){
+      const detectionResult = await fileAnalysis(analysisUrl)
+      if (detectionResult?.data?.status === "completed"){
+        setDetectionStatus('completed')
+        setAttributeData(detectionResult.data)
+        break;
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (detectionStatus === 'queued' && analysisUrl !== ''){
+      getUrlAnalysis();
+    }
+  }, [detectionStatus, analysisUrl])
 
   return (
     <div className="w-full h-full flex flex-col gap-5 pt-40 items-center">
@@ -25,7 +58,7 @@ export const File = () => {
         Search a File
       </h1>
       <h3 className="text-lg">
-        Upload a file to check for potential malware (Max size: 10MB)
+        Upload a file to check for potential malware (Max size: 35MB)
       </h3>
 
       <form className="flex flex-col justify-center items-center gap-2" onSubmit={handleLogin(loginHandler)}>
@@ -41,6 +74,12 @@ export const File = () => {
               onDrop={(acceptedFiles) => {
                 setValues('file', acceptedFiles)
               }}
+              maxFiles={1}
+              maxSize={34*1024*1024}
+              onDropRejected={(fileRejections) => {
+                toast.error(fileRejections[0]?.errors[0]?.message);
+              }}
+              disabled={detectionStatus === 'queued'}
             >
               {({
                 getRootProps,
@@ -49,9 +88,10 @@ export const File = () => {
                 isDragActive,
                 acceptedFiles,
               }) => (
-                <div>
+                <div className="border-2 border-dashed border-foreground-100 rounded-xl min-w-96 h-40 p-4 flex flex-col gap-4 justify-center items-center">
                   <div
                     {...getRootProps()}
+                    className="flex"
                   >
                     <input
                       {...getInputProps({
@@ -61,33 +101,49 @@ export const File = () => {
                       })}
                     />
 
-                    <p>
-                      <button type="button" onClick={open}>
+                    <p className="flex gap-3 items-center capitalize">
+                      <Button type="button" isDisabled={detectionStatus === 'queued'} onClick={open}>
                         Choose a file
-                      </button>{' '}
-                      or drag and drop
+                      </Button>
+                      <span>
+                        or drag and drop
+                      </span>
                     </p>
 
-                    {acceptedFiles.length
-                      ? acceptedFiles[0].name
-                      : 'No file selected.'}
-
-                    <div>
+                    {/* <div>
                       {fieldState.error && (
                         <span role="alert">{fieldState.error.message}</span>
                       )}
-                    </div>
+                    </div> */}
                   </div>
+
+                  {
+                    acceptedFiles.length > 0
+                    ?
+                    <div className="w-full px-4 p-2 border border-foreground-100 rounded-lg">
+                      <div className="flex justify-start gap-2 items-center">
+                        <AiFillFile />
+                        {acceptedFiles[0].name}
+                      </div>
+                    </div>
+                    : null
+                  }
                 </div>
               )}
             </Dropzone>
           )}
         />
 
-        <Button type="submit" color="primary" className="w-full">
-          Check URL
+        <Button type="submit" color="primary" className="w-full" isLoading={detectionStatus === 'queued'}>
+          {
+            detectionStatus === 'queued' ?
+            "Checking URL" :
+            "Check File"
+          }
         </Button>
       </form>
+
+      <DetectionResult detectionStatus={detectionStatus} attributeData={attributeData} />
 
     </div>
   )

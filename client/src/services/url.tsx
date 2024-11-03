@@ -1,10 +1,15 @@
 import { customAxios } from "../lib/axiosInstance"
 
 export const detectUrl = async (url: string) => {
-  const {data} = await customAxios.post("/url/detect", {
-    url
-  })
-  return data;
+  try {
+    const {data} = await customAxios.post("/url/detect", {
+      url
+    })
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 export const urlAnalysis = async (url: string) => {

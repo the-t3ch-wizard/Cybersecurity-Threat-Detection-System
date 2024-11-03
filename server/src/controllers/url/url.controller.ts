@@ -21,7 +21,7 @@ export const detectUrl = async (req: any, res: any) => {
       'url': url
     }
   };
-  console.log('config', config);
+  // console.log('config', config);
   const urlDetectionResponse = await axios.request(config);
 
   const analysisLink = urlDetectionResponse?.data?.data?.links?.self
@@ -43,7 +43,7 @@ export const urlAnalysis = async (req: any, res: any) => {
       'x-apikey': VIRUS_TOTAL_APIKEY
     },
   };
-  console.log('config', config);
+  // console.log('config', config);
   const urlAnalysisResponse = await axios.request(config);
 
   const attributes = urlAnalysisResponse?.data?.data?.attributes;

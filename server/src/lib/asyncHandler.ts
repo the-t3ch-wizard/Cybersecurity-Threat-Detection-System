@@ -4,6 +4,7 @@ export const asyncHandler = (fn: Function) => async (req: any, res: any, next: a
   try {
     await fn(req, res, next)
   } catch (error: any) {
-    return res.status(error.statusCode || 500).json(response(null, error.message || "Something went wrong!"))
+    console.log(error)
+    return res.status(error?.response?.status || error?.statusCode || 500).json(response(null, error?.response?.statusText || error?.message || "Something went wrong!"))
   }
 }

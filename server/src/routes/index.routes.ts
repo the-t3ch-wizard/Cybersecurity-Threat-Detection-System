@@ -2,6 +2,7 @@ import { Router } from "express";
 import { checkUserExistence, loginUser, logoutUser, registerUser, whoAmI } from "../controllers/user/user.controller";
 import { asyncHandler } from "../lib/asyncHandler";
 import urlRouter from "../routes/url/url.routes";
+import fileRouter from "../routes/file/file.routes";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.delete('/logout', asyncHandler(logoutUser))
 // router.use(asyncHandler(authHandler))
 
 router.use('/url', asyncHandler(urlRouter))
+router.use('/file', asyncHandler(fileRouter))
 
 export default router;
