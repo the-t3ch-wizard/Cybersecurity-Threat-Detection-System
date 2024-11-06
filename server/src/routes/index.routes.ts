@@ -3,6 +3,7 @@ import { checkUserExistence, loginUser, logoutUser, registerUser, whoAmI } from 
 import { asyncHandler } from "../lib/asyncHandler";
 import urlRouter from "../routes/url/url.routes";
 import fileRouter from "../routes/file/file.routes";
+import searchRouter from "../routes/search/search.routes";
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.delete('/logout', asyncHandler(logoutUser))
 
 router.use('/url', asyncHandler(urlRouter))
 router.use('/file', asyncHandler(fileRouter))
+router.use('/content', asyncHandler(searchRouter))
 
 export default router;

@@ -52,7 +52,7 @@ export const File = () => {
   }, [detectionStatus, analysisUrl])
 
   return (
-    <div className="w-full h-full flex flex-col gap-5 pt-40 items-center">
+    <div className="w-full h-full flex flex-col gap-5 pt-36 pb-8 items-center">
       
       <h1 className="text-3xl font-medium">
         Search a File
