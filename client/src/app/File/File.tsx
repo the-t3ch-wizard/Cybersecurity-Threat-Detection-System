@@ -68,7 +68,7 @@ export const File = () => {
           rules={{
             required: { value: true, message: 'This field is required' },
           }}
-          render={({ field: { onChange, onBlur }, fieldState }) => (
+          render={({ field: { onChange, onBlur } }) => (
             <Dropzone
               noClick
               onDrop={(acceptedFiles) => {
@@ -85,7 +85,6 @@ export const File = () => {
                 getRootProps,
                 getInputProps,
                 open,
-                isDragActive,
                 acceptedFiles,
               }) => (
                 <div className="border-2 border-dashed border-foreground-100 rounded-xl min-w-96 h-40 p-4 flex flex-col gap-4 justify-center items-center">
