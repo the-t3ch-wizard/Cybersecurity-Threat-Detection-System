@@ -1,9 +1,10 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:5000/api/v1";
+// const apiUrl = "http://localhost:5000";
+const apiUrl = "https://cybersecurity-threat-detection-system.onrender.com";
 
 export const customAxios = axios.create({
-  baseURL: apiUrl,
+  baseURL: apiUrl+"/api/v1",
   // withCredentials: true,
   headers: {
     "Content-Type": "application/json",
