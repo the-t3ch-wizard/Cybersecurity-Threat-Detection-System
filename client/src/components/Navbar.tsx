@@ -17,7 +17,7 @@ import { BiSearch } from "react-icons/bi";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { ImGithub } from "react-icons/im";
 import { useAppSelector } from "../lib/store/hooks/hooks";
-import { useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaServer } from "react-icons/fa";
 import { Tooltip } from "@nextui-org/react";
@@ -63,16 +63,12 @@ export const Navbar = () => {
         <ul className="hidden md:flex h-[70%] items-center justify-start ml-2 bg-foreground-100 p-1 rounded-lg">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href} className={`p-1 px-3 rounded-md h-full flex justify-center items-center transition-all ${item.href === activePage ? "bg-background" : ""}`}>
-              <Link
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium h-full",
-                )}
-                color="foreground"
-                href={item.href}
+              <NavLink 
+                to={item.href}
+                className="h-full"
               >
                 {item.label}
-              </Link>
+              </NavLink>
             </NavbarItem>
           ))}
         </ul>
