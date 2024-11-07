@@ -6,8 +6,11 @@ import { detectFile, fileAnalysis } from "../../services/file";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { DetectionResult } from "../../components/DetectionResult";
+import { useAppSelector } from "../../lib/store/hooks/hooks";
 
 export const File = () => {
+
+  const serverStatus = useAppSelector(state => state.server.status)
 
   const {
     register: login,
@@ -79,7 +82,7 @@ export const File = () => {
               onDropRejected={(fileRejections) => {
                 toast.error(fileRejections[0]?.errors[0]?.message);
               }}
-              disabled={detectionStatus === 'queued'}
+              disabled={!serverStatus ||detectionStatus === 'queued'}
             >
               {({
                 getRootProps,

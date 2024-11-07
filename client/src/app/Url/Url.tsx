@@ -4,8 +4,11 @@ import { detectUrl, urlAnalysis } from "../../services/url";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { DetectionResult } from "../../components/DetectionResult";
+import { useAppSelector } from "../../lib/store/hooks/hooks";
 
 export const Url = () => {
+
+  const serverStatus = useAppSelector(state => state.server.status)
 
   const {
     register: login,
@@ -60,7 +63,7 @@ export const Url = () => {
 
       <form className="flex flex-col justify-center items-center gap-2" onSubmit={handleLogin(loginHandler)}>
         <Input variant={"faded"} placeholder="https://example.com" className="w-96" {...login("url")} isDisabled={detectionStatus === 'queued'} />
-        <Button type="submit" color="primary" className="w-full" isLoading={detectionStatus === 'queued'}>
+        <Button type="submit" color="primary" className="w-full" isLoading={detectionStatus === 'queued'} isDisabled={!serverStatus}>
           {
             detectionStatus === 'queued' ?
             "Checking URL" :

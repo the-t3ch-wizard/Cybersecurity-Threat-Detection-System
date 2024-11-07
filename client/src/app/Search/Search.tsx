@@ -3,8 +3,11 @@ import { useForm } from "react-hook-form";
 import ReactMarkdown from "react-markdown";
 import { analyzeContent } from "../../services/search";
 import { useState } from "react";
+import { useAppSelector } from "../../lib/store/hooks/hooks";
 
 export const Search = () => {
+
+  const serverStatus = useAppSelector(state => state.server.status)
 
   const {
     register: login,
@@ -47,7 +50,7 @@ export const Search = () => {
           className="w-96"
           {...login("content")}
         />
-        <Button type="submit" color="primary" className="w-full">
+        <Button type="submit" color="primary" className="w-full" isDisabled={!serverStatus}>
           Check content
         </Button>
       </form>

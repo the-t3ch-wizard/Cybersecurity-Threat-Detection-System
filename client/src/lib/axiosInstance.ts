@@ -10,5 +10,5 @@ export const customAxios = axios.create({
     "Content-Type": "application/json",
     Accept: "*/*",
   },
-  timeout: 60000,
+  timeout: 15000,
 })

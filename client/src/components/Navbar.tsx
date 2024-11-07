@@ -7,31 +7,24 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@nextui-org/navbar";
-// import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import { Input } from "@nextui-org/input";
 import { link as linkStyles } from "@nextui-org/theme";
-// import { button as buttonStyles } from "@nextui-org/theme";
 import clsx from "clsx";
 
 import { siteConfig } from "../lib/constants";
-// import { ThemeSwitcher } from "./ThemeSwitcher";
 import { BiSearch } from "react-icons/bi";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { ImGithub } from "react-icons/im";
-// import {
-//   TwitterIcon,
-//   GithubIcon,
-//   DiscordIcon,
-//   HeartFilledIcon,
-//   SearchIcon,
-//   Logo,
-// } from "@/components/icons";
-// import { Register } from "./register";
-// import { Progress } from "@nextui-org/react";
-// import Loader from "./loader";
+import { useAppSelector } from "../lib/store/hooks/hooks";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { FaServer } from "react-icons/fa";
+import { Tooltip } from "@nextui-org/react";
 
 export const Navbar = () => {
+
+  const serverStatus = useAppSelector(state => state.server.status)
 
   const searchInput = (
     <Input
@@ -49,25 +42,31 @@ export const Navbar = () => {
     />
   );
 
+  const location = useLocation();
+
+  const [activePage, setActivePage] = useState("");
+
+  useEffect(() => {
+    console.log(location.pathname);
+    const parsedUrl = location.pathname.split('/');
+    console.log(parsedUrl);
+    if (parsedUrl.length > 1){
+      console.log(parsedUrl[1]);
+      setActivePage("/"+parsedUrl[1])
+    }
+  }, [location.pathname])
+
   return (
-    <NextUINavbar maxWidth="full" position="sticky" className="h-[10%]">
+    <NextUINavbar maxWidth="full" position="sticky" className="h-[10%] border-b border-foreground-100">
       {/* <Loader /> */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          {/* <Link className="flex justify-start items-center gap-1" href="/">
-            <Logo />
-            <p className="font-bold text-inherit">
-              Resume GenQ
-            </p>
-          </Link> */}
-        </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+        <ul className="hidden md:flex h-[70%] items-center justify-start ml-2 bg-foreground-100 p-1 rounded-lg">
           {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
+            <NavbarItem key={item.href} className={`p-1 px-3 rounded-md h-full flex justify-center items-center transition-all ${item.href === activePage ? "bg-background" : ""}`}>
               <Link
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                  "data-[active=true]:text-primary data-[active=true]:font-medium h-full",
                 )}
                 color="foreground"
                 href={item.href}
@@ -77,6 +76,24 @@ export const Navbar = () => {
             </NavbarItem>
           ))}
         </ul>
+        {
+          serverStatus ?
+          null :
+          <Tooltip
+              content={
+                <div className="">
+                  <div className="text-small font-medium">Backend server status</div>
+                </div>
+              }
+              color="foreground"
+              placement="bottom"
+            >
+            <div className="flex justify-center items-center gap-2 text-danger">
+              <FaServer size={18} />
+              Server offline
+            </div>
+          </Tooltip>
+        }
       </NavbarContent>
 
       <NavbarContent
