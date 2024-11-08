@@ -6,9 +6,12 @@ import { detectFile, fileAnalysis } from "../../services/file";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { DetectionResult } from "../../components/DetectionResult";
-import { useAppSelector } from "../../lib/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../lib/store/hooks/hooks";
+import { clearFile, clearFileAnalysisUrl, clearFileAttributes, clearFileStatus, setFile, setFileAnalysisUrl, setFileAttributes, setFileStatus } from "../../lib/store/features/file/fileSlice";
 
 export const File = () => {
+
+  const dispatch = useAppDispatch()
 
   const serverStatus = useAppSelector(state => state.server.status)
 
@@ -22,17 +25,28 @@ export const File = () => {
     formState: { errors: errorLogin },
   } = useForm();
 
-  const [detectionStatus, setDetectionStatus] = useState('');
-  const [analysisUrl, setAnalysisUrl] = useState('');
-  const [attributeData, setAttributeData] = useState<any>({});
+  const file = useAppSelector(state => state.file.file);
+  const detectionStatus = useAppSelector(state => state.file.fileStatus);
+  const analysisUrl = useAppSelector(state => state.file.fileAnalysisUrl);
+  const attributeData = useAppSelector(state => state.file.fileAttributes);
+
+  // const [detectionStatus, setDetectionStatus] = useState('');
+  // const [analysisUrl, setAnalysisUrl] = useState('');
+  // const [attributeData, setAttributeData] = useState<any>({});
 
   const loginHandler = async (e: any) => {
+    dispatch(clearFile())
+    dispatch(clearFileStatus())
+    dispatch(clearFileAnalysisUrl())
+    dispatch(clearFileAttributes())
     try {
-      setDetectionStatus('queued')
+      dispatch(setFile(e.url))
+      dispatch(setFileStatus('queued'))
       const fileDetectionResponse = await detectFile(e.file[0]);
-      setAnalysisUrl(fileDetectionResponse.data)
+      dispatch(setFileAnalysisUrl(fileDetectionResponse.data))
       toast.info(fileDetectionResponse.message)
     } catch (error) {
+      dispatch(setFileStatus(''))
       toast.error(error.message)
     }
   }
@@ -41,8 +55,10 @@ export const File = () => {
     while (true){
       const detectionResult = await fileAnalysis(analysisUrl)
       if (detectionResult?.data?.status === "completed"){
-        setDetectionStatus('completed')
-        setAttributeData(detectionResult.data)
+        // setDetectionStatus('completed')
+        dispatch(setFileStatus('completed'))
+        dispatch(setFileAttributes(detectionResult.data))
+        // setAttributeData(detectionResult.data)
         break;
       }
     }
@@ -136,10 +152,10 @@ export const File = () => {
           )}
         />
 
-        <Button type="submit" color="primary" className="w-[15%]" isLoading={detectionStatus === 'queued'}>
+        <Button type="submit" color="primary" className="w-[20%]" isLoading={detectionStatus === 'queued'}>
           {
             detectionStatus === 'queued' ?
-            "Checking URL" :
+            "Checking File" :
             "Check File"
           }
         </Button>

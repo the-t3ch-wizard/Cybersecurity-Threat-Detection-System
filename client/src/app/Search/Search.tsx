@@ -21,13 +21,8 @@ export const Search = () => {
   const [analysisResponse, setAnalysisResponse] = useState("");
 
   const loginHandler = async (e: any) => {
-    console.log('handle loginHandler', e)
-
     const contentAnalysisResponse = await analyzeContent(e.content)
-
-    console.log(contentAnalysisResponse);
     setAnalysisResponse(contentAnalysisResponse.data);
-    
   }
 
   return (
@@ -40,7 +35,7 @@ export const Search = () => {
         Analyze communications for manipulative language or unusual requests for access.
       </h3>
 
-      <form className="min-w-96 w-[50%] h-96 flex flex-col justify-start items-center gap-2" onSubmit={handleLogin(loginHandler)}>
+      <form className="min-w-96 w-[50%] flex flex-col justify-start items-center gap-2" onSubmit={handleLogin(loginHandler)}>
 
         <Textarea
           key="faded"
@@ -51,16 +46,18 @@ export const Search = () => {
           className="w-[85%]"
           {...login("content")}
         />
-        <Button type="submit" color="primary" className="w-[15%]" isDisabled={!serverStatus}>
+        <Button type="submit" color="primary" className="w-[20%]" isDisabled={!serverStatus}>
           Check content
         </Button>
       </form>
 
       {
         analysisResponse !== "" ?
-        <ReactMarkdown className="w-full px-10 p-5 text-wrap">
-          {analysisResponse}
-        </ReactMarkdown> :
+        <div className="w-full px-10">
+          <ReactMarkdown className="w-full p-5 text-wrap rounded-xl border border-foreground-300">
+            {analysisResponse}
+          </ReactMarkdown>
+        </div> :
         null
       }
     </div>

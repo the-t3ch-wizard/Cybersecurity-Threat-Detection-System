@@ -4,6 +4,7 @@ const initialState = {
   url: "",
   urlAttributes: {},
   urlStatus: "",
+  urlAnalysisUrl: "",
 }
 
 export const urlSlice = createSlice({
@@ -12,36 +13,43 @@ export const urlSlice = createSlice({
   reducers: {
     setUrl: (state, action: {
       type: any,
-      payload: {
-        url: string
-      }
+      payload: string
     }) => {
-      state.url = action.payload.url
+      state.url = action.payload
     },
     clearUrl: (state) => {
       state.url = ""
     },
     setUrlAttributes: (state, action: {
       type: any,
-      payload: {
-        urlAttributes: any
-      }
+      payload: any
     }) => {
-      state.urlAttributes = action.payload.urlAttributes
+      state.urlAttributes = action.payload
     },
     clearUrlAttributes: (state) => {
-      state.urlAttributes = ""
+      state.urlAttributes = {}
     },
     setUrlStatus: (state, action: {
       type: any,
-      payload: {
-        urlStatus: string
-      }
+      payload: string
     }) => {
-      state.urlStatus = action.payload.urlStatus
+      state.urlStatus = action.payload
     },
     clearUrlStatus: (state) => {
       state.urlStatus = ""
     },
+    setUrlAnalysisUrl: (state, action: {
+      type: any,
+      payload: string
+    }) => {
+      state.urlAnalysisUrl = action.payload
+    },
+    clearUrlAnalysisUrl: (state) => {
+      state.urlAnalysisUrl = ""
+    }
   }
 })
+
+export const { setUrl, setUrlAttributes, setUrlStatus, setUrlAnalysisUrl, clearUrl, clearUrlAttributes, clearUrlStatus, clearUrlAnalysisUrl } = urlSlice.actions;
+
+export default urlSlice.reducer;

@@ -52,7 +52,6 @@ export const Navbar = () => {
     if (!serverStatus) dispatch(setServerStatusService())
     const parsedUrl = location.pathname.split('/');
     if (parsedUrl.length > 1){
-      console.log(parsedUrl[1]);
       setActivePage("/"+parsedUrl[1])
     }
   }, [location.pathname])

@@ -21,7 +21,7 @@ export const detectUrl = async (req: any, res: any) => {
       'url': url
     }
   };
-  console.log('config', config);
+  // console.log('config', config);
   const urlDetectionResponse = await axios.request(config);
 
   const analysisLink = urlDetectionResponse?.data?.data?.links?.self

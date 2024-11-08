@@ -30,5 +30,5 @@ export const contentAnalysis = async (req: any, res: any) => {
   });
   const responseText = result.response.text();
 
-  return res.status(200).json(response(responseText, "Analysis of url is provided successfully!"))
+  return res.status(200).json(response(responseText, "Analysis of content is provided successfully!"))
 }

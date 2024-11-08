@@ -4,9 +4,12 @@ import { detectUrl, urlAnalysis } from "../../services/url";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { DetectionResult } from "../../components/DetectionResult";
-import { useAppSelector } from "../../lib/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../lib/store/hooks/hooks";
+import { clearUrl, clearUrlAnalysisUrl, clearUrlAttributes, clearUrlStatus, setUrl, setUrlAnalysisUrl, setUrlAttributes, setUrlStatus } from "../../lib/store/features/url/urlSlice";
 
 export const Url = () => {
+
+  const dispatch = useAppDispatch()
 
   const serverStatus = useAppSelector(state => state.server.status)
 
@@ -19,17 +22,24 @@ export const Url = () => {
     formState: { errors: errorLogin },
   } = useForm();
 
-  const [detectionStatus, setDetectionStatus] = useState('');
-  const [analysisUrl, setAnalysisUrl] = useState('');
-  const [attributeData, setAttributeData] = useState<any>({});
+  const url = useAppSelector(state => state.url.url);
+  const detectionStatus = useAppSelector(state => state.url.urlStatus);
+  const analysisUrl = useAppSelector(state => state.url.urlAnalysisUrl);
+  const attributeData = useAppSelector(state => state.url.urlAttributes);
 
   const loginHandler = async (e: any) => {
+    dispatch(clearUrl())
+    dispatch(clearUrlStatus())
+    dispatch(clearUrlAnalysisUrl())
+    dispatch(clearUrlAttributes())
     try {
+      dispatch(setUrl(e.url))
+      dispatch(setUrlStatus('queued'))
       const urlDetectionResponse = await detectUrl(e.url)
-      setDetectionStatus('queued')
-      setAnalysisUrl(urlDetectionResponse.data)
+      dispatch(setUrlAnalysisUrl(urlDetectionResponse.data))
       toast.info(urlDetectionResponse.message)
     } catch (error) {
+      dispatch(setUrlStatus(''))
       toast.error(error.message)
     }
   }
@@ -38,8 +48,8 @@ export const Url = () => {
     while (true){
       const detectionResult = await urlAnalysis(analysisUrl)
       if (detectionResult?.data?.status === "completed"){
-        setDetectionStatus('completed')
-        setAttributeData(detectionResult.data)
+        dispatch(setUrlStatus('completed'))
+        dispatch(setUrlAttributes(detectionResult.data))
         break;
       }
     }
@@ -62,8 +72,8 @@ export const Url = () => {
       </h3>
 
       <form className="min-w-96 w-[50%] flex justify-center items-center gap-2" onSubmit={handleLogin(loginHandler)}>
-        <Input variant={"faded"} placeholder="https://example.com" className="w-[85%]" {...login("url")} isDisabled={detectionStatus === 'queued'} />
-        <Button type="submit" color="primary" className="w-[15%]" isLoading={detectionStatus === 'queued'} isDisabled={!serverStatus}>
+        <Input variant={"faded"} placeholder="https://example.com" className="w-[80%]" defaultValue={url} {...login("url")} isDisabled={detectionStatus === 'queued'} />
+        <Button type="submit" color="primary" className="w-[20%]" isLoading={detectionStatus === 'queued'} isDisabled={!serverStatus}>
           {
             detectionStatus === 'queued' ?
             "Checking URL" :

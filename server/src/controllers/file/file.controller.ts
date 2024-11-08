@@ -28,7 +28,7 @@ export const detectFile = async (req: any, res: any) => {
   
   const analysisLink = urlDetectionResponse?.data?.data?.links?.self
 
-  return res.status(200).json(response(analysisLink, "Threat of url is being detected!"))
+  return res.status(200).json(response(analysisLink, "Threat of file is being detected!"))
 }
 
 export const fileAnalysis = async (req: any, res: any) => {
@@ -49,5 +49,5 @@ export const fileAnalysis = async (req: any, res: any) => {
 
   const attributes = urlAnalysisResponse?.data?.data?.attributes;
 
-  return res.status(200).json(response(attributes, "Analysis of url is provided successfully!"))
+  return res.status(200).json(response(attributes, "Analysis of file is provided successfully!"))
 }
