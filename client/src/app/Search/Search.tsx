@@ -33,24 +33,25 @@ export const Search = () => {
   return (
     <div className="w-full h-full flex flex-col gap-5 pt-36 pb-8 items-center">
       
-      <h1 className="text-3xl font-medium">
+      <h1 className="text-4xl font-bold">
         Text-Based Phishing Detection
       </h1>
-      <h3 className="text-lg">
+      <h3 className="text-foreground-500">
         Analyze communications for manipulative language or unusual requests for access.
       </h3>
 
-      <form className="flex flex-col justify-center items-center gap-2" onSubmit={handleLogin(loginHandler)}>
+      <form className="min-w-96 w-[50%] h-96 flex flex-col justify-start items-center gap-2" onSubmit={handleLogin(loginHandler)}>
 
         <Textarea
           key="faded"
           variant="faded"
           labelPlacement="outside"
           placeholder="Enter content that is to be analyzed"
-          className="w-96"
+          minRows={20}
+          className="w-[85%]"
           {...login("content")}
         />
-        <Button type="submit" color="primary" className="w-full" isDisabled={!serverStatus}>
+        <Button type="submit" color="primary" className="w-[15%]" isDisabled={!serverStatus}>
           Check content
         </Button>
       </form>

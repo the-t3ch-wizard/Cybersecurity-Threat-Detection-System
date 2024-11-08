@@ -55,16 +55,16 @@ export const File = () => {
   }, [detectionStatus, analysisUrl])
 
   return (
-    <div className="w-full h-full flex flex-col gap-5 pt-36 pb-8 items-center">
+    <div className="w-full h-full flex flex-col gap-5 pt-24 pb-8 items-center">
       
-      <h1 className="text-3xl font-medium">
+      <h1 className="text-4xl font-bold">
         Search a File
       </h1>
-      <h3 className="text-lg">
+      <h3 className="text-foreground-500">
         Upload a file to check for potential malware (Max size: 35MB)
       </h3>
 
-      <form className="flex flex-col justify-center items-center gap-2" onSubmit={handleLogin(loginHandler)}>
+      <form className="min-w-96 w-[50%] h-96 flex flex-col justify-center items-center gap-2" onSubmit={handleLogin(loginHandler)}>
         <Controller
           control={loginControl}
           name="file"
@@ -90,7 +90,7 @@ export const File = () => {
                 open,
                 acceptedFiles,
               }) => (
-                <div className="border-2 border-dashed border-foreground-100 rounded-xl min-w-96 h-40 p-4 flex flex-col gap-4 justify-center items-center">
+                <div className="border-2 border-dashed border-foreground-100 rounded-xl w-[85%] h-[80%] p-4 flex flex-col gap-4 justify-center items-center">
                   <div
                     {...getRootProps()}
                     className="flex"
@@ -103,7 +103,7 @@ export const File = () => {
                       })}
                     />
 
-                    <p className="flex gap-3 items-center capitalize">
+                    <p className="flex flex-col gap-3 items-center capitalize">
                       <Button type="button" isDisabled={detectionStatus === 'queued'} onClick={open}>
                         Choose a file
                       </Button>
@@ -136,7 +136,7 @@ export const File = () => {
           )}
         />
 
-        <Button type="submit" color="primary" className="w-full" isLoading={detectionStatus === 'queued'}>
+        <Button type="submit" color="primary" className="w-[15%]" isLoading={detectionStatus === 'queued'}>
           {
             detectionStatus === 'queued' ?
             "Checking URL" :
