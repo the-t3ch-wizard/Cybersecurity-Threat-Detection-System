@@ -1,22 +1,14 @@
 import { Outlet } from "react-router-dom"
 import { Toaster } from "sonner"
-import { useAppDispatch, useAppSelector } from "../../lib/store/hooks/hooks"
+import { useAppSelector } from "../../lib/store/hooks/hooks"
 import { Navbar } from "../../components/Navbar";
-import { useEffect } from "react";
-import { setServerStatusService } from "../../lib/store/features/server/serverSlice";
 
 export const HomeLayout = () => {
 
-  const dispatch = useAppDispatch();
-
   const theme = useAppSelector(state => state.theme.theme);
 
-  useEffect(() => {
-    dispatch(setServerStatusService())
-  }, [])
-
   return (
-    <div className={`${theme} bg-background text-foreground relative flex flex-col min-h-screen`}>
+    <div className={`${theme} bg-background text-foreground relative flex flex-col min-h-screen font-geist`}>
 
       <Toaster
         position="bottom-right"
