@@ -16,15 +16,17 @@ import { siteConfig } from "../lib/constants";
 import { BiSearch } from "react-icons/bi";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { ImGithub } from "react-icons/im";
-import { useAppSelector } from "../lib/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../lib/store/hooks/hooks";
 import { NavLink, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaServer } from "react-icons/fa";
 import { Tooltip } from "@nextui-org/react";
+import { setServerStatusService } from "../lib/store/features/server/serverSlice";
 
 export const Navbar = () => {
 
-  const serverStatus = useAppSelector(state => state.server.status)
+  const dispatch = useAppDispatch();
+  const serverStatus = useAppSelector(state => state.server.status);
 
   const searchInput = (
     <Input
@@ -47,9 +49,8 @@ export const Navbar = () => {
   const [activePage, setActivePage] = useState("");
 
   useEffect(() => {
-    console.log(location.pathname);
+    if (!serverStatus) dispatch(setServerStatusService())
     const parsedUrl = location.pathname.split('/');
-    console.log(parsedUrl);
     if (parsedUrl.length > 1){
       console.log(parsedUrl[1]);
       setActivePage("/"+parsedUrl[1])
@@ -65,7 +66,7 @@ export const Navbar = () => {
             <NavbarItem key={item.href} className={`p-1 px-3 rounded-md h-full flex justify-center items-center transition-all ${item.href === activePage ? "bg-background" : ""}`}>
               <NavLink 
                 to={item.href}
-                className="h-full"
+                className="h-full flex justify-center items-center"
               >
                 {item.label}
               </NavLink>
