@@ -20,10 +20,10 @@ export const siteConfig = {
       label: "Search",
       href: "/search",
     },
-    {
-      label: "About",
-      href: "/about",
-    },
+    // {
+    //   label: "About",
+    //   href: "/about",
+    // },
   ],
   navMenuItems: [
     {
@@ -42,10 +42,10 @@ export const siteConfig = {
       label: "Search",
       href: "/search",
     },
-    {
-      label: "About",
-      href: "/about",
-    },
+    // {
+    //   label: "About",
+    //   href: "/about",
+    // },
     // {
     //   label: "Profile",
     //   href: "/profile",
